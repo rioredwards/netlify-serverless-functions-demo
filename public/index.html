@@ -9,13 +9,19 @@
   <body>
     <h1>Up and Running with Serverless Functions</h1>
     <button id="fetch-btn">Fetch</button>
-    <button id="fetch-pokedex-btn">Fetch Pokedex</button>
+    <button id="fetch-kanto-pokedex-btn">Fetch Kanto Pokedex</button>
+    <button id="fetch-hoenn-pokedex-btn">Fetch Hoenn Pokedex</button>
     <p id="response-output">Response Placeholder</p>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const fetchBtn = document.getElementById("fetch-btn");
-        const fetchPokedexBtn = document.getElementById("fetch-pokedex-btn");
+        const fetchKantoPokedexBtn = document.getElementById(
+          "fetch-kanto-pokedex-btn"
+        );
+        const fetchHoennPokedexBtn = document.getElementById(
+          "fetch-hoenn-pokedex-btn"
+        );
         const responseText = document.getElementById("response-output");
 
         fetchBtn.addEventListener("click", async () => {
@@ -25,10 +31,28 @@
           responseText.innerText = data;
         });
 
-        fetchPokedexBtn.addEventListener("click", async () => {
-          const response = await fetch("/.netlify/functions/pokedex");
+        fetchKantoPokedexBtn.addEventListener("click", async () => {
+          const response = await fetch("/.netlify/functions/pokedex", {
+            method: "POST",
+            body: JSON.stringify({ region: "kanto" }),
+          });
           const data = await response.json();
-          const pokemon = data.results.map((p) => p.name).join(", ");
+          const pokemon = data.pokemon
+            .map((p) => p.pokemon_species.name)
+            .join(", ");
+
+          responseText.innerText = pokemon;
+        });
+
+        fetchHoennPokedexBtn.addEventListener("click", async () => {
+          const response = await fetch("/.netlify/functions/pokedex", {
+            method: "POST",
+            body: JSON.stringify({ region: "hoenn" }),
+          });
+          const data = await response.json();
+          const pokemon = data.pokemon
+            .map((p) => p.pokemon_species.name)
+            .join(", ");
 
           responseText.innerText = pokemon;
         });
